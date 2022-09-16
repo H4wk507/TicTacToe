@@ -19,47 +19,57 @@ const scores = {
   tie: 0,
 };
 
-const meStart = false;
+let meStart = false;
 let userChoice = choices[0];
+let enemyChoice = choices[1];
 
-function fillBoard(field, board) {
-  let idx = fields.indexOf(field);
-  if (idx !== -1) board[idx] = "X";
+function fillBoard(field) {
+  document.getElementById(field).innerText = userChoice;
+
+  const idx = fields.indexOf(field);
+  if (idx !== -1) board[idx] = userChoice;
 }
 
-function isTie(board) {
+function isTie() {
   /**
    * The game is tied only if every field is occupied.
    *
    * @return {Boolean} Whether the game has tied or not.
    */
-  for (let i = 0; i < 9; i++) {
-    if (board[i] === "") return false;
+
+  for (let field of board) {
+    if (field === "") return false;
   }
   return true;
 }
 
-function checkWinner(board) {
-  /**
-   * If the game has ended, change result text.
-   *
-   * @return {Boolean} Whether a game has ended or not.
-   */
-  if (!isOver(board)) return false;
-
-  if (isOver(board) === "O")
-    document.querySelector(".result").innerText = "You lose!";
-  else if (isOver(board) === "X")
-    document.querySelector(".result").innerText = "You win!";
-  else document.querySelector(".result").innerText = "Tie!";
-
-  return true;
+function hasEnded() {
+  return getGameState() !== "";
 }
 
-function isOver(board) {
+function displayResultText() {
+  /**
+   * If the game has ended, change the result text.
+   *
+   * @return {void}
+   */
+
+  const gameState = getGameState();
+  if (gameState === "") return;
+
+  if (gameState === enemyChoice)
+    document.querySelector(".result").innerText = "You lose!";
+  else if (gameState === userChoice)
+    document.querySelector(".result").innerText = "You win!";
+  else document.querySelector(".result").innerText = "Tie!";
+}
+
+function getGameState() {
   /**
    * If the game has ended, return the winner i.e. 'X' or 'O' or 'tie' if it has tied.
-   * Otherwise return false.
+   * Otherwise return "".
+   *
+   * @return {String}
    */
 
   /* vertical */
@@ -90,114 +100,116 @@ function isOver(board) {
   if (board[2] !== "" && board[2] === board[4] && board[4] === board[6])
     return board[2];
 
-  if (isTie(board)) return "tie";
+  if (isTie()) return "tie";
 
-  return false;
+  return "";
 }
 
-function minimax(board, isMaximizing) {
-  if (isOver(board)) {
-    let result = isOver(board);
+function minimax(isMaximizing) {
+  if (getGameState() !== "") {
+    const result = getGameState();
     return scores[result];
   }
 
-  if (isMaximizing) {
-    let bestScore = -Infinity;
-    for (let i = 0; i < 9; i++) {
-      if (board[i] == "") {
-        board[i] = "X";
-        let score = minimax(board, false);
-        board[i] = "";
-        bestScore = Math.max(bestScore, score);
-      }
-    }
-    return bestScore;
-  } else {
-    let bestScore = Infinity;
-    for (let i = 0; i < 9; i++) {
-      if (board[i] == "") {
-        board[i] = "O";
-        let score = minimax(board, true);
-        board[i] = "";
-        bestScore = Math.min(bestScore, score);
-      }
-    }
-    return bestScore;
-  }
-}
-
-function getBestMove(board) {
-  /**
-   * Check every possible available field, calculate value of the field,
-   * and set choice on the highest value field.
-   *
-   * @return {void}
-   */
-
-  let bestScore = Infinity;
-  let bestMoveIdx = -1;
+  let bestScore = isMaximizing ? -Infinity : Infinity;
   for (let i = 0; i < 9; i++) {
     // if the field is taken, continue
     if (board[i] !== "") continue;
 
-    board[i] = "O";
-    const currScore = minimax(board, true);
+    board[i] = isMaximizing ? "X" : "O";
+    const score = minimax(!isMaximizing);
+    board[i] = "";
+    bestScore = isMaximizing
+      ? Math.max(bestScore, score)
+      : Math.min(bestScore, score);
+  }
+
+  return bestScore;
+}
+
+function getBestMove() {
+  /**
+   * Check every possible available field, calculate value of the field,
+   * and set the mark on the highest value field.
+   *
+   * @return {void}
+   */
+
+  const isMaximizing = enemyChoice === "X";
+  let bestScore = isMaximizing ? -Infinity : Infinity;
+  let bestMoveIdx = -1;
+
+  for (let i = 0; i < 9; i++) {
+    // if the field is taken, continue
+    if (board[i] !== "") continue;
+
+    // place the mark on the board
+    board[i] = enemyChoice;
+    /* calculate the value of that placement, assuming the other player
+       is playing optimally. */
+    const currScore = minimax(!isMaximizing);
+    // remove the mark from the board
     board[i] = "";
 
-    if (currScore < bestScore) {
+    // if optimal placement was found, save it and get its index
+    if (
+      (enemyChoice === "O" && currScore < bestScore) ||
+      (enemyChoice === "X" && currScore > bestScore)
+    ) {
       bestScore = currScore;
       bestMoveIdx = i;
     }
   }
-  board[bestMoveIdx] = "O";
-  document.getElementById(fields[bestMoveIdx]).innerText = "O";
+
+  // after checking every field, place the mark on the optimal position
+  board[bestMoveIdx] = enemyChoice;
+  document.getElementById(fields[bestMoveIdx]).innerText = enemyChoice;
 }
 
-function game(field, board) {
+function game(field) {
   /**
-   * Place user choice at the 'field' in the 'board'.
+   * Place user mark at the 'field' in the 'board'.
    *
    * @param {String} field field from 'one' to 'nine'.
    * @return {void}
    */
-  let over = checkWinner(board);
-  if (!over) {
-    if (document.getElementById(field).innerText === "") {
-      document.getElementById(field).innerText = "X";
-      fillBoard(field, board);
-      over = checkWinner(board);
-      if (!over) getBestMove(board);
-      checkWinner(board);
-    }
+
+  if (!hasEnded()) {
+    // if the field is already occupied, return
+    if (document.getElementById(field).innerText !== "") return;
+
+    fillBoard(field);
+    if (!hasEnded()) getBestMove();
   }
+
+  displayResultText();
 }
 
-function resetBoard(board) {
-  // reset board
+function resetBoard() {
   board.fill("");
   fields.forEach((field) => (document.getElementById(field).innerText = ""));
 
   // generate best AI move and switch text to your turn.
-  if (!meStart) getBestMove(board);
+  if (!meStart) getBestMove();
   document.querySelector(".result").innerText = "X turn";
 }
 
 function changeSides() {
-  resetBoard(board);
+  meStart = !meStart;
+  [userChoice, enemyChoice] = [enemyChoice, userChoice];
+  resetBoard();
 }
 
 function main() {
-  if (!meStart) getBestMove(board);
+  if (!meStart) getBestMove();
 
   fields.forEach((field) =>
-    document
-      .getElementById(field)
-      .addEventListener("click", () => game(field, board)),
+    document.getElementById(field).addEventListener("click", () => game(field)),
   );
 
   document
     .querySelector(".restart")
-    .addEventListener("click", () => resetBoard(board));
+    .addEventListener("click", () => resetBoard());
 
   document
     .querySelector(".change-sides")
