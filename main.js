@@ -19,7 +19,7 @@ const scores = {
   tie: 0,
 };
 
-const meStart = true;
+const meStart = false;
 let userChoice = choices[0];
 
 function fillBoard(field, board) {
