@@ -16,6 +16,7 @@ body {
   display: flex;
   justify-content: flex-start;
 }
+
 .header,
 .footer {
   padding: 16px;
@@ -42,15 +43,17 @@ body {
 .right {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: 32px;
 }
 
 .result-container {
   width: 302px;
-  margin: 32px;
 }
 
 .result,
+.vs-friend,
+.vs-ai,
 .change-sides,
 .restart {
   border: 2px solid white;
@@ -60,17 +63,19 @@ body {
   padding: 24px;
 }
 
-.board {
+table.board {
   border-collapse: collapse;
 }
 
 .board:hover,
+.vs-friend,
+.vs-ai,
 .restart:hover,
 .change-sides:hover {
   cursor: pointer;
 }
 
-td {
+td.box {
   color: white;
   border: 2px solid white;
   width: 100px;

@@ -20,14 +20,18 @@ const scores = {
 };
 
 let meStart = false;
+let gameMode = "vsAI";
+
+// TODO: remove userChoice and enemyChoice and keep currChoice which changes every turn.
 let userChoice = choices[0];
 let enemyChoice = choices[1];
+let currChoice = choices[1];
 
 function fillBoard(field) {
-  document.getElementById(field).innerText = userChoice;
+  document.getElementById(field).innerText = currChoice;
 
   const idx = fields.indexOf(field);
-  if (idx !== -1) board[idx] = userChoice;
+  if (idx !== -1) board[idx] = currChoice;
 }
 
 function isTie() {
@@ -135,6 +139,7 @@ function getBestMove() {
    * @return {void}
    */
 
+  currChoice = enemyChoice;
   const isMaximizing = enemyChoice === "X";
   let bestScore = isMaximizing ? -Infinity : Infinity;
   let bestMoveIdx = -1;
@@ -164,6 +169,12 @@ function getBestMove() {
   // after checking every field, place the mark on the optimal position
   board[bestMoveIdx] = enemyChoice;
   document.getElementById(fields[bestMoveIdx]).innerText = enemyChoice;
+  changeMark();
+}
+
+function changeMark() {
+  const idx = choices.indexOf(currChoice);
+  currChoice = choices[idx ^ 1];
 }
 
 function game(field) {
@@ -178,11 +189,25 @@ function game(field) {
     // if the field is already occupied, return
     if (document.getElementById(field).innerText !== "") return;
 
+    // place user's mark
     fillBoard(field);
-    if (!hasEnded()) getBestMove();
+    changeMark();
+    // place enemy's mark
+    if (!hasEnded() && gameMode === "vsAI") getBestMove();
+    // say that it is now user's turn
+    document.querySelector(".result").innerText = `${currChoice} turn`;
   }
-
   displayResultText();
+}
+
+function playVsFriend() {
+  gameMode = "vsFriend";
+  resetBoard();
+}
+
+function playVsAI() {
+  gameMode = "vsAI";
+  resetBoard();
 }
 
 function resetBoard() {
@@ -190,30 +215,33 @@ function resetBoard() {
   fields.forEach((field) => (document.getElementById(field).innerText = ""));
 
   // generate best AI move and switch text to your turn.
-  if (!meStart) getBestMove();
-  document.querySelector(".result").innerText = "X turn";
+  if (!meStart && gameMode === "vsAI") getBestMove();
+  if (gameMode === "vsFriend") currChoice = "O";
+  document.querySelector(".result").innerText = `${currChoice} turn`;
 }
 
 function changeSides() {
   meStart = !meStart;
   [userChoice, enemyChoice] = [enemyChoice, userChoice];
+  currChoice = "O";
   resetBoard();
 }
 
 function main() {
-  if (!meStart) getBestMove();
+  if (!meStart && gameMode === "vsAI") getBestMove();
 
   fields.forEach((field) =>
     document.getElementById(field).addEventListener("click", () => game(field)),
   );
 
-  document
-    .querySelector(".restart")
-    .addEventListener("click", () => resetBoard());
+  document.querySelector(".vs-friend").addEventListener("click", playVsFriend);
+  document.querySelector(".vs-ai").addEventListener("click", playVsAI);
 
   document
     .querySelector(".change-sides")
-    .addEventListener("click", () => changeSides());
+    .addEventListener("click", changeSides);
+
+  document.querySelector(".restart").addEventListener("click", resetBoard);
 }
 
 main();
