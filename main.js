@@ -16,38 +16,63 @@ const board = ["", "", "", "", "", "", "", "", ""];
 const scores = {
   X: 1,
   O: -1,
-  tie: 0,
+  TIE: 0,
 };
 
 let meStart = false;
-let gameMode = "vsAI";
 
-// TODO: remove userChoice and enemyChoice and keep currChoice which changes every turn.
+const Color = Object.freeze({
+  GREEN: "rgb(1, 121, 51)",
+  YELLOW: "rgb(204, 112, 0)",
+  RED: "rgb(172, 0, 0)",
+});
+
+const gameModes = Object.freeze({
+  vsAI: Symbol("vsAI"),
+  vsFriend: Symbol("vsFriend"),
+});
+let gameMode = gameModes.vsAI;
+
 let userChoice = choices[0];
 let enemyChoice = choices[1];
 let currChoice = choices[1];
 
 function fillBoard(field) {
+  /**
+   * Fill the 'board' variable and HTML board with 'currChoice' choice.
+   *
+   * @return {void}
+   */
+
   document.getElementById(field).innerText = currChoice;
 
   const idx = fields.indexOf(field);
-  if (idx !== -1) board[idx] = currChoice;
+  if (idx !== -1) {
+    board[idx] = currChoice;
+  }
 }
 
-function isTie() {
+function hasTied() {
   /**
-   * The game is tied only if every field is occupied.
+   * The game has tied only if every field is occupied.
    *
-   * @return {Boolean} Whether the game has tied or not.
+   * @return {Boolean} true if the game has tied, false otherwise.
    */
 
   for (let field of board) {
     if (field === "") return false;
   }
+
   return true;
 }
 
 function hasEnded() {
+  /**
+   * Check if the game has ended.
+   *
+   * @return {Boolean} true if the game has ended, false otherwise.
+   */
+
   return getGameState() !== "";
 }
 
@@ -58,22 +83,23 @@ function displayResultText() {
    * @return {void}
    */
 
-  const gameState = getGameState();
-  if (gameState === "") return;
+  if (!hasEnded()) return;
 
-  if (gameState === enemyChoice)
-    document.querySelector(".result").innerText = "You lose!";
-  else if (gameState === userChoice)
-    document.querySelector(".result").innerText = "You win!";
-  else document.querySelector(".result").innerText = "Tie!";
+  const gameState = getGameState();
+  if (gameState === enemyChoice) {
+    document.querySelector(".result").innerText = `${enemyChoice} wins!`;
+  } else if (gameState === userChoice) {
+    document.querySelector(".result").innerText = `${userChoice} wins!`;
+  } else {
+    document.querySelector(".result").innerText = "Tie!";
+  }
 }
 
 function getGameState() {
   /**
-   * If the game has ended, return the winner i.e. 'X' or 'O' or 'tie' if it has tied.
-   * Otherwise return "".
+   * If the game has ended, return the winner.
    *
-   * @return {String}
+   * @return {String} winner: 'X, 'O', 'TIE' or "" if no winner.
    */
 
   /* vertical */
@@ -104,13 +130,19 @@ function getGameState() {
   if (board[2] !== "" && board[2] === board[4] && board[4] === board[6])
     return board[2];
 
-  if (isTie()) return "tie";
+  if (hasTied()) return "TIE";
 
   return "";
 }
 
 function minimax(isMaximizing) {
-  if (getGameState() !== "") {
+  /**
+   *
+   * @param {Boolean} isMaximizing
+   * @return {int}
+   */
+
+  if (hasEnded()) {
     const result = getGameState();
     return scores[result];
   }
@@ -192,8 +224,16 @@ function game(field) {
     // place user's mark
     fillBoard(field);
     changeMark();
+    if (gameMode === gameModes.vsAI) {
+      document.querySelector(".vs-friend").style.backgroundColor = Color.RED;
+    } else {
+      document.querySelector(".vs-ai").style.backgroundColor = Color.RED;
+    }
+    document.querySelector(".change-sides").style.backgroundColor = Color.RED;
     // place enemy's mark
-    if (!hasEnded() && gameMode === "vsAI") getBestMove();
+    if (!hasEnded() && gameMode === gameModes.vsAI) {
+      getBestMove();
+    }
     // say that it is now user's turn
     document.querySelector(".result").innerText = `${currChoice} turn`;
   }
@@ -201,34 +241,64 @@ function game(field) {
 }
 
 function playVsFriend() {
-  gameMode = "vsFriend";
-  resetBoard();
+  if (
+    document.querySelector(".vs-friend").style.backgroundColor === Color.YELLOW
+  ) {
+    document.querySelector(".vs-friend").style.backgroundColor = Color.GREEN;
+    document.querySelector(".vs-ai").style.backgroundColor = Color.YELLOW;
+
+    gameMode = gameModes.vsFriend;
+    resetBoard();
+  }
 }
 
 function playVsAI() {
-  gameMode = "vsAI";
-  resetBoard();
+  if (document.querySelector(".vs-ai").style.backgroundColor === Color.YELLOW) {
+    document.querySelector(".vs-friend").style.backgroundColor = Color.YELLOW;
+    document.querySelector(".vs-ai").style.backgroundColor = Color.GREEN;
+
+    gameMode = gameModes.vsAI;
+    resetBoard();
+  }
 }
 
 function resetBoard() {
   board.fill("");
   fields.forEach((field) => (document.getElementById(field).innerText = ""));
+  currChoice = "O";
 
-  // generate best AI move and switch text to your turn.
-  if (!meStart && gameMode === "vsAI") getBestMove();
-  if (gameMode === "vsFriend") currChoice = "O";
+  // generate best AI move
+  if (!meStart && gameMode === gameModes.vsAI) {
+    getBestMove();
+  }
+
   document.querySelector(".result").innerText = `${currChoice} turn`;
+  document.querySelector(".change-sides").style.backgroundColor = Color.YELLOW;
+  document.querySelector(
+    gameMode === gameModes.vsAI ? ".vs-friend" : ".vs-ai",
+  ).style.backgroundColor = Color.YELLOW;
 }
 
 function changeSides() {
-  meStart = !meStart;
-  [userChoice, enemyChoice] = [enemyChoice, userChoice];
-  currChoice = "O";
-  resetBoard();
+  if (
+    document.querySelector(".change-sides").style.backgroundColor ===
+    Color.YELLOW
+  ) {
+    meStart = !meStart;
+    [userChoice, enemyChoice] = [enemyChoice, userChoice];
+    resetBoard();
+  }
 }
 
 function main() {
-  if (!meStart && gameMode === "vsAI") getBestMove();
+  if (!meStart) {
+    getBestMove();
+  }
+
+  document.querySelector(".vs-friend").style.backgroundColor = Color.YELLOW;
+  document.querySelector(".vs-ai").style.backgroundColor = Color.GREEN;
+  document.querySelector(".change-sides").style.backgroundColor = Color.YELLOW;
+  document.querySelector(".restart").style.backgroundColor = Color.YELLOW;
 
   fields.forEach((field) =>
     document.getElementById(field).addEventListener("click", () => game(field)),
