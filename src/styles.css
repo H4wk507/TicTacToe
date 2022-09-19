@@ -12,16 +12,16 @@ body {
   flex-direction: column;
 }
 
-.header-container {
-  display: flex;
-  justify-content: flex-start;
-}
-
-.header,
+.header > h1,
 .footer {
   padding: 16px;
   color: white;
   font-size: 24px;
+  text-align: start;
+}
+
+.header > h1 {
+  text-align: center;
 }
 
 .center-container {
@@ -57,6 +57,7 @@ body {
 .change-sides,
 .restart {
   border: 2px solid white;
+  border-radius: 8px;
   color: white;
   font-size: 24px;
   text-align: center;
@@ -67,11 +68,15 @@ table.board {
   border-collapse: collapse;
 }
 
-.board:hover,
-.vs-friend,
-.vs-ai,
+.vs-friend:hover,
+.vs-ai:hover,
 .restart:hover,
 .change-sides:hover {
+  transform: scale(1.05);
+  cursor: pointer;
+}
+
+.board:hover {
   cursor: pointer;
 }
 
