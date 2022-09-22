@@ -1,6 +1,6 @@
-# Tic Tac Toe
+# Tic-Tac-Toe
 
-A simple project made to practice javascript.
+A simple Tic-Tac-Toe game made with HTML, CSS and JS.
 
 ## Play
 

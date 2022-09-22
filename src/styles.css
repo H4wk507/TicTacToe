@@ -1,27 +1,40 @@
-* {
+:root {
+  --black: #202020;
+  --emerald: #009b77;
+  --white: #ededed;
+  --violet: #6b5b95;
+}
+
+*,
+*::before,
+*::after {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
-  font-family: Arial, sans-serif;
-  background-color: black;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  background: var(--light);
 }
 
 body {
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
 }
 
-.header > h1,
+.header,
 .footer {
   padding: 16px;
-  color: white;
-  font-size: 24px;
+  color: var(--emerald);
+  font-size: 28px;
   text-align: start;
 }
 
 .header > h1 {
   text-align: center;
+}
+
+hr {
+  border: 1px solid var(--emerald);
 }
 
 .center-container {
@@ -48,32 +61,31 @@ body {
 }
 
 .result-container {
-  width: 302px;
+  width: 300px;
 }
 
 .result,
-.vs-friend,
-.vs-ai,
-.change-sides,
-.restart {
-  border: 2px solid white;
-  border-radius: 8px;
-  color: white;
+button {
+  border: 1px solid var(--black);
+  border-radius: 5px;
+  color: var(--white);
   font-size: 24px;
   text-align: center;
   padding: 24px;
 }
 
-table.board {
-  border-collapse: collapse;
-}
-
-.vs-friend:hover,
-.vs-ai:hover,
-.restart:hover,
-.change-sides:hover {
+button:hover {
   transform: scale(1.05);
   cursor: pointer;
+}
+
+.result {
+  color: var(--black);
+}
+
+table.board {
+  box-shadow: rgb(0 0 0 / 50%) 10px 10px 10px;
+  border-collapse: collapse;
 }
 
 .board:hover {
@@ -81,8 +93,9 @@ table.board {
 }
 
 td.box {
-  color: white;
-  border: 2px solid white;
+  color: var(--white);
+  background: var(--white);
+  border: 1px solid var(--black);
   width: 100px;
   height: 100px;
   text-align: center;
@@ -90,10 +103,10 @@ td.box {
 }
 
 .footer > a {
-  color: white;
+  color: var(--emerald);
   text-decoration: none;
 }
 
 .footer > a:hover {
-  color: #5ce64e;
+  color: var(--violet);
 }
