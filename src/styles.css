@@ -83,16 +83,17 @@ button:hover {
   color: var(--black);
 }
 
-table.board {
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   box-shadow: rgb(0 0 0 / 50%) 10px 10px 10px;
-  border-collapse: collapse;
 }
 
 .board:hover {
   cursor: pointer;
 }
 
-td.box {
+.box {
   color: var(--white);
   background: var(--white);
   border: 1px solid var(--black);
@@ -110,3 +111,4 @@ td.box {
 .footer > a:hover {
   color: var(--violet);
 }
+
