@@ -44,12 +44,6 @@
   const restart = document.querySelector(".restart");
 
   function fillBoard(field) {
-    /**
-     * Fill the 'board' variable and HTML board with 'currChoice' choice.
-     *
-     * @return {void}
-     */
-
     const fieldBox = document.getElementById(field);
     fieldBox.innerText = currChoice;
     fieldBox.style.background = Color.RED;
@@ -61,36 +55,17 @@
   }
 
   function hasTied() {
-    /**
-     * The game has tied only if every field is occupied.
-     *
-     * @return {Boolean} true if the game has tied, false otherwise.
-     */
-
     for (let field of board) {
       if (field === "") return false;
     }
-
     return true;
   }
 
   function hasEnded() {
-    /**
-     * Check if the game has ended.
-     *
-     * @return {Boolean} true if the game has ended, false otherwise.
-     */
-
     return getGameState() !== "";
   }
 
   function displayResultText() {
-    /**
-     * If the game has ended, change the result text.
-     *
-     * @return {void}
-     */
-
     if (!hasEnded()) return;
 
     const gameState = getGameState(true);
@@ -104,13 +79,6 @@
   }
 
   function getGameState(color = false) {
-    /**
-     * If the game has ended, return the winner.
-     *
-     * @param {Boolean} color if set to true, color the winning fields green.
-     * @return {String} winner: 'X, 'O', 'TIE' or "" if no winner.
-     */
-
     /* vertical */
     for (let i = 0; i < 3; i++) {
       if (
@@ -169,12 +137,6 @@
   }
 
   function minimax(isMaximizing) {
-    /**
-     *
-     * @param {Boolean} isMaximizing
-     * @return {int}
-     */
-
     if (hasEnded()) {
       const result = getGameState();
       return scores[result];
@@ -200,8 +162,6 @@
     /**
      * Check every possible available field, calculate value of the field,
      * and set the mark on the highest value field.
-     *
-     * @return {void}
      */
 
     const isMaximizing = enemyChoice === "X";
@@ -242,13 +202,6 @@
   }
 
   function game(field) {
-    /**
-     * Place user mark at the 'field' in the 'board'.
-     *
-     * @param {String} field field from 'one' to 'nine'.
-     * @return {void}
-     */
-
     if (!hasEnded()) {
       // if the field is already occupied, return
       if (document.getElementById(field).innerText !== "") return;

@@ -1,0 +1,15 @@
+.footer {
+  padding: 16px;
+  color: var(--emerald);
+  font-size: 2rem;
+  text-align: start;
+}
+
+.gh-link {
+  color: var(--emerald);
+  text-decoration: none;
+
+  &:hover {
+    filter: brightness(0.5);
+  }
+}
