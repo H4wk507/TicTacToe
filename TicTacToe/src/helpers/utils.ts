@@ -1,13 +1,15 @@
-import { Board, Choice } from "./types";
+import { TBoard, Choice } from "./types";
 
-export const getEmptyBoard = (): Board => new Array(9).fill(null);
+export const getEmptyBoard = (): TBoard => new Array(9).fill(null);
 
-export const hasEnded = (board: Board): boolean =>
+export const hasEnded = (board: TBoard): boolean =>
   hasTied(board) || getWinner(board) !== null;
 
-export const hasTied = (board: Board): boolean => !board.includes(null);
+export const hasTied = (board: TBoard): boolean => !board.includes(null);
 
-export const getWinner = (board: Board): Choice | null => {
+export const getWinner = (
+  board: TBoard,
+): { winner: Choice; line: [number, number, number] } | null => {
   const lines = [
     [0, 1, 2],
     [3, 4, 5],
@@ -20,17 +22,19 @@ export const getWinner = (board: Board): Choice | null => {
   ];
   for (const [a, b, c] of lines) {
     if (board[a] && board[a] === board[b] && board[a] === board[c]) {
-      return board[a];
+      return {
+        winner: board[a] as Choice,
+        line: [a, b, c],
+      };
     }
   }
   return null;
 };
 
 export const getBestMove = (
-  board: Board,
-  setBoard: (board: Board) => void,
+  board: TBoard,
   currChoice: Choice,
-) => {
+): number | null => {
   /**
    * Check every possible available field, calculate value of the field,
    * and set the mark on the highest value field.
@@ -63,21 +67,16 @@ export const getBestMove = (
     }
   }
 
-  // after checking every field, place the mark on the optimal position
-  if (bestMoveIdx !== null) {
-    setBoard(board.map((cell, i) => (i === bestMoveIdx ? enemyChoice : cell)));
-  }
-  // document.getElementById(fields[bestMoveIdx]).innerText = enemyChoice;
-  // document.getElementById(fields[bestMoveIdx]).style.background = Color.RED;
+  return bestMoveIdx;
 };
 
-export const minimax = (isMaximizing: boolean, board: Board) => {
+export const minimax = (isMaximizing: boolean, board: TBoard) => {
   if (hasEnded(board)) {
     const winner = getWinner(board);
     if (winner === null) {
       return 0;
     }
-    return winner === "X" ? 1 : -1;
+    return winner.winner === "X" ? 1 : -1;
   }
 
   let bestScore = isMaximizing ? -Infinity : Infinity;

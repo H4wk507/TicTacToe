@@ -8,6 +8,8 @@ interface BoardProps {
   setBoard: (board: TBoard) => void;
   choice: Choice;
   setChoice: (choice: Choice) => void;
+  winningLine: [number, number, number] | null;
+  setWinningLine: (winningLine: [number, number, number] | null) => void;
 }
 
 export default function Board({
@@ -16,6 +18,8 @@ export default function Board({
   setBoard,
   choice,
   setChoice,
+  winningLine,
+  setWinningLine,
 }: BoardProps) {
   return (
     <div className={styles.board}>
@@ -29,6 +33,8 @@ export default function Board({
           choice={choice}
           setChoice={setChoice}
           mode={mode}
+          winningLine={winningLine}
+          setWinningLine={setWinningLine}
         />
       ))}
     </div>

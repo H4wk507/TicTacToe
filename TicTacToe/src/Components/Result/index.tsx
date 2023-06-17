@@ -10,7 +10,7 @@ interface ResultProps {
 export default function Result({ board, choice }: ResultProps) {
   const getResultText = (): string => {
     const winner = getWinner(board);
-    return winner ? `${winner} wins!` : "Tie!";
+    return winner ? `${winner.winner} wins!` : "Tie!";
   };
 
   const resultText = hasEnded(board) ? getResultText() : `${choice} turn`;

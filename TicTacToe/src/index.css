@@ -35,3 +35,7 @@ hr {
 .inactive {
   background: rgb(204, 125, 0);
 }
+
+.occupied-cell {
+  background: rgb(130, 0, 0);
+}

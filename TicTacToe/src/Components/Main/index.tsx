@@ -9,17 +9,13 @@ import ChangeSidesButton from "../ChangeSidesButton";
 import RestartButton from "../RestartButton";
 import Board from "../Board";
 
-//const Color = Object.freeze({
-//  // other color formats do not work with comparison.
-//  GREEN: "rgb(1, 121, 51)",
-//  YELLOW: "rgb(204, 125, 0)",
-//  RED: "rgb(130, 0, 0)",
-//});
-
 export default function Main() {
   const [board, setBoard] = useState<TBoard>(getEmptyBoard());
-  const [mode, setMode] = useState<Mode>("vsFriend");
+  const [mode, setMode] = useState<Mode>("vsAI");
   const [choice, setChoice] = useState<Choice>("O");
+  const [winningLine, setWinningLine] = useState<
+    [number, number, number] | null
+  >(null);
 
   return (
     <div className={styles["center-container"]}>
@@ -30,24 +26,38 @@ export default function Main() {
           setBoard={setBoard}
           choice={choice}
           setChoice={setChoice}
+          winningLine={winningLine}
+          setWinningLine={setWinningLine}
         />
         <Result board={board} choice={choice} />
       </div>
       <div className={styles.right}>
-        <VsFriendButton mode={mode} setMode={setMode} setBoard={setBoard} />
+        <VsFriendButton
+          mode={mode}
+          setMode={setMode}
+          setBoard={setBoard}
+          setWinningLine={setWinningLine}
+        />
         <VsAIButton
           mode={mode}
           setMode={setMode}
           setBoard={setBoard}
           choice={choice}
+          setWinningLine={setWinningLine}
         />
         <ChangeSidesButton
           mode={mode}
           setChoice={setChoice}
           setBoard={setBoard}
           choice={choice}
+          setWinningLine={setWinningLine}
         />
-        <RestartButton mode={mode} choice={choice} setBoard={setBoard} />
+        <RestartButton
+          mode={mode}
+          choice={choice}
+          setBoard={setBoard}
+          setWinningLine={setWinningLine}
+        />
       </div>
     </div>
   );
