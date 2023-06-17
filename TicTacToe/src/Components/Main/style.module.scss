@@ -21,11 +21,6 @@
   gap: 32px;
 }
 
-.result-container {
-  width: 300px;
-}
-
-.result,
 button {
   border: 1px solid var(--black);
   border-radius: 5px;
@@ -33,41 +28,9 @@ button {
   font-size: 24px;
   text-align: center;
   padding: 24px;
-}
 
-button:hover {
-  transform: scale(1.05);
-  cursor: pointer;
-}
-
-.result {
-  color: var(--black);
-}
-
-.board {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  box-shadow: rgb(0 0 0 / 50%) 10px 10px 10px;
-}
-
-.board:hover {
-  cursor: pointer;
-}
-
-.box {
-  color: var(--black);
-  background: var(--white);
-  border: 1px solid var(--black);
-  width: 100px;
-  height: 100px;
-  text-align: center;
-  font-size: 82px;
-}
-
-.active {
-  background: rgb(1, 121, 51);
-}
-
-.inactive {
-  background: rgb(204, 125, 0);
+  &:hover {
+    transform: scale(1.05);
+    cursor: pointer;
+  }
 }

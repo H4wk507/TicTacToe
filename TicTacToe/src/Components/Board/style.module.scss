@@ -1,0 +1,9 @@
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  box-shadow: rgb(0 0 0 / 50%) 10px 10px 10px;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
