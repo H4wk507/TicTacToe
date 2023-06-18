@@ -1,39 +1,42 @@
 import { TBoard, Choice, Mode } from "../../helpers/types";
 import { getBestMove, getEmptyBoard } from "../../helpers/utils";
 
-interface RestartButtonProps {
+interface VsAIButtonProps {
   mode: Mode;
-  choice: Choice;
+  setMode: (mode: Mode) => void;
   setBoard: (board: TBoard) => void;
+  choice: Choice;
   setWinningLine: (winningLine: [number, number, number] | null) => void;
-  setStarted: (started: boolean) => void;
+  started: boolean;
 }
 
-export default function RestartButton({
+export default function VsAIButton({
   mode,
-  choice,
+  setMode,
   setBoard,
+  choice,
   setWinningLine,
-  setStarted,
-}: RestartButtonProps) {
+  started,
+}: VsAIButtonProps) {
   return (
     <button
-      className="inactive"
       onClick={() => {
-        setStarted(false);
         setWinningLine(null);
+        setMode("vsAI");
         const newBoard = getEmptyBoard();
+        setBoard(newBoard);
         const enemyChoice = choice === "O" ? "X" : "O";
-        setBoard(getEmptyBoard());
-        if (mode === "vsAI" && choice === "X") {
+        if (choice === "X") {
           const bestMoveIdx = getBestMove(newBoard, choice);
           setBoard(
             newBoard.map((cell, i) => (i === bestMoveIdx ? enemyChoice : cell)),
           );
         }
       }}
+      className={mode === "vsAI" ? "green" : started ? "red" : "orange"}
+      disabled={started}
     >
-      Restart
+      Play vs AI
     </button>
   );
 }

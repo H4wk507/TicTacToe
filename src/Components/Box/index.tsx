@@ -37,8 +37,8 @@ export default function Box({
       setStarted(true);
     }
     let newBoard = board.map((cell, i) => (i === idx ? choice : cell));
-    const enemyChoice = choice === "O" ? "X" : "O";
     setBoard(newBoard);
+    const enemyChoice = choice === "O" ? "X" : "O";
     if (mode === "vsAI") {
       const bestMoveIdx = getBestMove(newBoard, choice);
       newBoard = newBoard.map((cell, i) =>
@@ -46,8 +46,9 @@ export default function Box({
       );
       setBoard(newBoard);
     } else {
-      setChoice(choice === "O" ? "X" : "O");
+      setChoice(enemyChoice);
     }
+
     if (hasEnded(newBoard)) {
       const winner = getWinner(newBoard);
       if (winner !== null) {
@@ -60,9 +61,7 @@ export default function Box({
     <div
       onClick={placeMark}
       className={`${styles.box} ${
-        winningLine?.includes(idx)
-          ? "active"
-          : content !== null && "occupied-cell"
+        winningLine?.includes(idx) ? "green" : content !== null && "red"
       }`}
     >
       {content}

@@ -1,9 +1,12 @@
 .box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   color: var(--white);
   background: var(--white);
   border: 1px solid var(--black);
+  margin: 0 -1px -1px 0;
   width: 100px;
   height: 100px;
-  text-align: center;
-  font-size: 82px;
+  font-size: 5rem;
 }

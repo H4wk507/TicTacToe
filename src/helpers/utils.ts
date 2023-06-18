@@ -82,9 +82,9 @@ export const minimax = (isMaximizing: boolean, board: TBoard) => {
   let bestScore = isMaximizing ? -Infinity : Infinity;
   const choice = isMaximizing ? "X" : "O";
   for (let i = 0; i < 9; i++) {
-    // if the field is taken, continue
-    if (board[i]) continue;
-
+    if (board[i]) {
+      continue;
+    }
     board[i] = choice;
     const score = minimax(!isMaximizing, board);
     board[i] = null;

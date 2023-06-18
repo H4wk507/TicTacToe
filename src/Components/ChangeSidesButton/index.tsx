@@ -1,44 +1,42 @@
 import { TBoard, Choice, Mode } from "../../helpers/types";
 import { getBestMove, getEmptyBoard } from "../../helpers/utils";
 
-interface VsAIButtonProps {
-  mode: Mode;
-  setMode: (mode: Mode) => void;
-  setBoard: (board: TBoard) => void;
+interface ChangeSidesButtonProps {
   choice: Choice;
+  setChoice: (choice: Choice) => void;
+  setBoard: (board: TBoard) => void;
   setWinningLine: (winningLine: [number, number, number] | null) => void;
+  mode: Mode;
   started: boolean;
 }
 
-export default function VsAIButton({
-  mode,
-  setMode,
-  setBoard,
+export default function ChangeSidesButton({
   choice,
+  setChoice,
+  setBoard,
   setWinningLine,
+  mode,
   started,
-}: VsAIButtonProps) {
+}: ChangeSidesButtonProps) {
   return (
     <button
       onClick={() => {
-        if (started) {
-          return;
-        }
         setWinningLine(null);
         const newBoard = getEmptyBoard();
-        const enemyChoice = choice === "O" ? "X" : "O";
-        setMode("vsAI");
         setBoard(newBoard);
-        if (choice === "X") {
+        const newChoice = choice === "O" ? "X" : "O";
+        setChoice(newChoice);
+        if (mode === "vsAI" && newChoice === "X") {
           const bestMoveIdx = getBestMove(newBoard, choice);
           setBoard(
-            newBoard.map((cell, i) => (i === bestMoveIdx ? enemyChoice : cell)),
+            newBoard.map((cell, i) => (i === bestMoveIdx ? choice : cell)),
           );
         }
       }}
-      className={mode === "vsAI" ? "active" : started ? "red" : "inactive"}
+      className={started ? "red" : "orange"}
+      disabled={started}
     >
-      Play vs AI
+      Change sides
     </button>
   );
 }

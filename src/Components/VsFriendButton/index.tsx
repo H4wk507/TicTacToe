@@ -19,14 +19,12 @@ export default function VsFriendButton({
   return (
     <button
       onClick={() => {
-        if (started) {
-          return;
-        }
         setWinningLine(null);
         setMode("vsFriend");
         setBoard(getEmptyBoard());
       }}
-      className={mode === "vsFriend" ? "active" : started ? "red" : "inactive"}
+      className={mode === "vsFriend" ? "green" : started ? "red" : "orange"}
+      disabled={started}
     >
       Play vs friend
     </button>
