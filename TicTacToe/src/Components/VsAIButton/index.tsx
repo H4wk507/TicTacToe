@@ -7,6 +7,7 @@ interface VsAIButtonProps {
   setBoard: (board: TBoard) => void;
   choice: Choice;
   setWinningLine: (winningLine: [number, number, number] | null) => void;
+  started: boolean;
 }
 
 export default function VsAIButton({
@@ -15,10 +16,14 @@ export default function VsAIButton({
   setBoard,
   choice,
   setWinningLine,
+  started,
 }: VsAIButtonProps) {
   return (
     <button
       onClick={() => {
+        if (started) {
+          return;
+        }
         setWinningLine(null);
         const newBoard = getEmptyBoard();
         const enemyChoice = choice === "O" ? "X" : "O";
@@ -31,7 +36,7 @@ export default function VsAIButton({
           );
         }
       }}
-      className={`${mode === "vsAI" ? "active" : "inactive"}`}
+      className={mode === "vsAI" ? "active" : started ? "red" : "inactive"}
     >
       Play vs AI
     </button>

@@ -39,3 +39,7 @@ hr {
 .occupied-cell {
   background: rgb(130, 0, 0);
 }
+
+.red {
+  background: rgb(130, 0, 0);
+}

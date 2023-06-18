@@ -12,6 +12,8 @@ interface BoxProps {
   mode: Mode;
   winningLine: [number, number, number] | null;
   setWinningLine: (line: [number, number, number] | null) => void;
+  started: boolean;
+  setStarted: (started: boolean) => void;
 }
 
 export default function Box({
@@ -24,10 +26,15 @@ export default function Box({
   mode,
   winningLine,
   setWinningLine,
+  started,
+  setStarted,
 }: BoxProps) {
   const placeMark = (): void => {
     if (hasEnded(board) || board[idx]) {
       return;
+    }
+    if (!started) {
+      setStarted(true);
     }
     let newBoard = board.map((cell, i) => (i === idx ? choice : cell));
     const enemyChoice = choice === "O" ? "X" : "O";

@@ -6,6 +6,7 @@ interface RestartButtonProps {
   choice: Choice;
   setBoard: (board: TBoard) => void;
   setWinningLine: (winningLine: [number, number, number] | null) => void;
+  setStarted: (started: boolean) => void;
 }
 
 export default function RestartButton({
@@ -13,11 +14,13 @@ export default function RestartButton({
   choice,
   setBoard,
   setWinningLine,
+  setStarted,
 }: RestartButtonProps) {
   return (
     <button
       className="inactive"
       onClick={() => {
+        setStarted(false);
         setWinningLine(null);
         const newBoard = getEmptyBoard();
         const enemyChoice = choice === "O" ? "X" : "O";

@@ -7,6 +7,7 @@ interface ChangeSidesButtonProps {
   setBoard: (board: TBoard) => void;
   setWinningLine: (winningLine: [number, number, number] | null) => void;
   mode: Mode;
+  started: boolean;
 }
 
 export default function ChangeSidesButton({
@@ -15,11 +16,15 @@ export default function ChangeSidesButton({
   setBoard,
   setWinningLine,
   mode,
+  started,
 }: ChangeSidesButtonProps) {
   return (
     <button
-      className="inactive"
+      className={started ? "red" : "inactive"}
       onClick={() => {
+        if (started) {
+          return;
+        }
         setWinningLine(null);
         const newBoard = getEmptyBoard();
         const newChoice = choice === "O" ? "X" : "O";

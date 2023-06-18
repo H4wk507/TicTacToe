@@ -16,6 +16,7 @@ export default function Main() {
   const [winningLine, setWinningLine] = useState<
     [number, number, number] | null
   >(null);
+  const [started, setStarted] = useState(false);
 
   return (
     <div className={styles["center-container"]}>
@@ -28,6 +29,8 @@ export default function Main() {
           setChoice={setChoice}
           winningLine={winningLine}
           setWinningLine={setWinningLine}
+          started={started}
+          setStarted={setStarted}
         />
         <Result board={board} choice={choice} />
       </div>
@@ -37,6 +40,7 @@ export default function Main() {
           setMode={setMode}
           setBoard={setBoard}
           setWinningLine={setWinningLine}
+          started={started}
         />
         <VsAIButton
           mode={mode}
@@ -44,6 +48,7 @@ export default function Main() {
           setBoard={setBoard}
           choice={choice}
           setWinningLine={setWinningLine}
+          started={started}
         />
         <ChangeSidesButton
           mode={mode}
@@ -51,12 +56,14 @@ export default function Main() {
           setBoard={setBoard}
           choice={choice}
           setWinningLine={setWinningLine}
+          started={started}
         />
         <RestartButton
           mode={mode}
           choice={choice}
           setBoard={setBoard}
           setWinningLine={setWinningLine}
+          setStarted={setStarted}
         />
       </div>
     </div>
